@@ -1,0 +1,223 @@
+/* Reset and Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Body Layouts */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Login/Register Page Specific */
+.login-page body {
+    background: #f4f4f4;
+    align-items: flex-start;
+    padding: 40px 20px;
+}
+
+/* Form Styles */
+form {
+    background: white;
+    padding: 40px 35px;
+    margin: 10px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 28px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+input {
+    width: 100%;
+    padding: 15px 18px;
+    margin: 8px 0;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: #fafbfc;
+}
+
+input:focus {
+    outline: none;
+    border-color: #3498db;
+    background: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15);
+}
+
+button {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #2980b9, #1f5f8b);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Link Styles */
+a {
+    text-align: center;
+    margin-top: 20px;
+    color: #3498db;
+    text-decoration: none;
+    font-size: 15px;
+    display: block;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+    transform: translateY(-1px);
+}
+
+/* Navigation Container */
+.nav-container {
+    display: flex;
+    align-items: center;
+    gap: 80px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px 60px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Navigation Links */
+#a-prijem, 
+#a-vydej {
+    text-decoration: none;
+    color: #2c3e50;
+    font-size: 36px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 25px 40px;
+    border-radius: 12px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 150px;
+}
+
+#a-prijem:hover, 
+#a-vydej:hover {
+    color: #3498db;
+    background: rgba(52, 152, 219, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.2);
+}
+
+/* Divider Line */
+#line {
+    width: 3px;
+    height: 80px;
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .login-page body {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+
+    form {
+        width: 90%;
+        max-width: 400px;
+        padding: 30px 25px;
+    }
+
+    .nav-container {
+        flex-direction: column;
+        gap: 40px;
+        padding: 30px;
+        text-align: center;
+    }
+
+    #a-prijem, 
+    #a-vydej {
+        font-size: 32px;
+        padding: 20px 35px;
+        min-width: 140px;
+    }
+
+    #line {
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(to right, #3498db, #2980b9);
+    }
+}
+
+@media (max-width: 480px) {
+    form {
+        padding: 25px 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    input {
+        padding: 12px 15px;
+        font-size: 15px;
+    }
+
+    button {
+        padding: 14px;
+        font-size: 15px;
+    }
+
+    .nav-container {
+        padding: 20px;
+        gap: 30px;
+    }
+
+    #a-prijem, 
+    #a-vydej {
+        font-size: 28px;
+        padding: 18px 30px;
+        min-width: 130px;
+    }
+}

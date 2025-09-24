@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Přihlášení / Registrace</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+    <!-- Přihlášení -->
+    <form id="login-form">
+        <h2>Přihlášení</h2>
+        <label for="username">Uživatelské jméno:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Heslo:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" id="login-btn">Přihlásit se</button>
+
+        <a id="show-register">Zaregistrovat se</a>
+    </form>
+
+    <!-- Registrace -->
+    <form id="register-form">
+        <h2>Registrace</h2>
+        <label for="username">Uživatelské jméno:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Heslo:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" id="register-btn">Registrovat se</button>
+
+        <a id="show-login">Přihlásit se</a>
+    </form>
+
+    <script src="../scripts/script.js"></script>
+</body>
+</html>
