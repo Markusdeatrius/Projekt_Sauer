@@ -9,11 +9,11 @@
     <!-- Přihlášení -->
     <form id="login-form">
         <h2>Přihlášení</h2>
-        <label for="username">Uživatelské jméno:</label>
-        <input type="text" id="username" name="username" required>
+        <label for="login-username">Uživatelské jméno:</label>
+        <input type="text" id="login-username" name="username" required>
 
-        <label for="password">Heslo:</label>
-        <input type="password" id="password" name="password" required>
+        <label for="login-password">Heslo:</label>
+        <input type="password" id="login-password" name="password" required>
 
         <button type="submit" id="login-btn">Přihlásit se</button>
 
@@ -23,11 +23,17 @@
     <!-- Registrace -->
     <form id="register-form">
         <h2>Registrace</h2>
-        <label for="username">Uživatelské jméno:</label>
-        <input type="text" id="username" name="username" required>
+        <label for="register-firstname">Vaše křestní jméno:</label>
+        <input type="text" id="register-firstname" name="firstname" required>
 
-        <label for="password">Heslo:</label>
-        <input type="password" id="password" name="password" required>
+        <label for="register-surname">Vaše příjmení:</label>
+        <input type="text" id="register-surname" name="surname" required>
+
+        <label for="register-username">Vaše přezdívka:</label>
+        <input type="text" id="register-username" name="username" placeholder="mVyletal" required>
+
+        <label for="register-password">Heslo:</label>
+        <input type="password" id="register-password" name="password" required>
 
         <button type="submit" id="register-btn">Registrovat se</button>
 
