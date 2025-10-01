@@ -4,7 +4,8 @@ const db = mysql.createConnection({
   host: '127.0.0.1',
   user: 'sauer',
   password: 'Heslo',
-  database: 'projekt_sauer'
+  database: 'projekt_sauer',
+  multipleStatements: true 
 });
 
 db.connect((err) => {
