@@ -1,10 +1,8 @@
-Projekt Sauer
+=====Projekt Sauer=====
 
-In this project is used NodeJs so please install it otherwise it will NOT work
+In this project is used NodeJs so please install it otherwise it will NOT work.
 
-Open two terminal windows
-
-=====first terminal window=====
+PORTS 3000, 5050, 8081 are used.
 
 backend - to directly use this dir.  use cd backend/
 		
@@ -12,10 +10,7 @@ backend - to directly use this dir.  use cd backend/
 
 		- npm run start
 
-		- using port 3000 and 5050
 
-
-=====second terminal window=====
 
 frontend - to directly use this dir. use cd Frontend/
 
@@ -23,4 +18,3 @@ frontend - to directly use this dir. use cd Frontend/
 			
 		 - npm run dev
 
-         - using port 8081
