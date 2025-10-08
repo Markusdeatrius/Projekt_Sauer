@@ -28,11 +28,6 @@ app.use(session({
   }
 }));
 
-// Výchozí stránka
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../Frontend/public/index.html'));
-});
-
 (async () => {
   try {
     await seed();
@@ -43,6 +38,17 @@ app.get('/', (req, res) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(results);
       });
+    });
+
+    //Endpoint pro ziskani productu
+    app.get('/products', (req, res) => {
+      db.query(
+        'SELECT uuid, barcode, productName FROM products',
+        (err, results) => {
+          if (err) return res.status(500).json({ error: err.message });
+          res.json({ products: results });
+        }
+      );
     });
 
     // Připojení API rout
