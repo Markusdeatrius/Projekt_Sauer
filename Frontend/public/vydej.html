@@ -4,8 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Výdej</title>
+    <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
-    Výdej
+    <div class="page-header">
+        <div class="image-placeholder">
+            <div class="placeholder-text">Výdej Image</div>
+        </div>
+        
+        <div class="content-container">
+            <h1>VÝDEJ</h1>
+            <!--Přidat položku button-->
+            <div class="action-buttons">
+                <button id="vydat-produkt" class="main-button clickable-area">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3031/3031665.png" alt="Issue" class="button-icon-img">
+                    <span>Vydat Položku</span>
+                </button>
+            <!--Zpět button-->    
+            <button id="back" class="secondary-button clickable-area" data-nav="prijem_vydej.html">
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271220.png" alt="Back" class="button-icon-img">
+                <span>Zpět</span>
+            </button>
+            </div>
+            <!--vydej polozek-->
+            <div id="vydej-polozky" class="content-area">
+                <div class="placeholder-content">
+                    <p>Zde se budou zobrazovat vydané položky...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--okno ktere se ukaze po kliknuti vydat polozku-->
+    <div id="modal-overlay-vydej" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Vydat položku</h2>
+                <button id="close-modal-vydej" class="close-button">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="scanner-section">
+                    <div class="scanner-placeholder">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2959/2959191.png" alt="Barcode Scanner" class="scanner-icon">
+                        <p>Čtečka čárových kódů</p>
+                        <button id="scan-button-vydej" class="scan-button">Skenovat kód</button>
+                    </div>
+                </div>
+                
+                <div class="input-section">
+                    <label for="product-name-vydej">Název produktu:</label>
+                    <input type="text" id="product-name-vydej" placeholder="Zadejte název produktu..." required>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button id="issue-item-btn" class="confirm-button">Vydat položku</button>
+                    <button id="cancel-btn-vydej" class="cancel-button">Zrušit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/vydej.js"></script>
 </body>
 </html>

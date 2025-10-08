@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const data = await res.json();
 
             if (res.ok) {
+                alert(`Registrace úspěšná: ${data.username}`);
                 registerForm.reset();
                 loginForm.style.display = "block";
                 registerForm.style.display = "none";

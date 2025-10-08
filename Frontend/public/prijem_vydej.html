@@ -1,19 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Příjem/Výdej</title>
     <link rel="stylesheet" href="../styles/styles.css">
-    <style>
-
-    </style>
 </head>
 <body>
-    <div class="nav-container">
-        <a href="prijem.html" id="a-prijem">PŘÍJEM</a>
-        <div id="line"></div>
-        <a href="vydej.html" id="a-vydej">VÝDEJ</a>
+    <div class="page-header">
+        <div class="content-container">
+            <div class="nav-container">
+                <a href="prijem.html" id="a-prijem">PŘÍJEM</a>
+                <div id="line"></div>
+                <a href="vydej.html" id="a-vydej">VÝDEJ</a>
+            </div>
+
+            <h1 style="font-size: 2rem;">SKLAD</h1>
+            <div id="warehouse-items" class="content-area">
+                <div class="placeholder-content">
+                    <p>Zde se budou zobrazovat položky které byly přidány</p>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        const warehouseItems = document.getElementById('warehouse-items');
+
+        function loadItems() {
+            warehouseItems.innerHTML = `
+                <div class="placeholder-content">
+                    <p>Zde se budou zobrazovat položky které byly přidány</p>
+                </div>
+            `;
+        }
+
+        loadItems();
+    </script>
 </body>
 </html>

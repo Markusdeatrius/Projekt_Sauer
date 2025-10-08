@@ -1,20 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Příjem</title>
-    <link rel="stylesheet" href="/Frontend/styles/styles.css">
+    <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
-    <h1>Příjem</h1>
-    <button id="pridat-produkt"></button>
-    <div>
-        <button id="back">Zpět</button>
-        <img src="" alt="">
+    <header class="page-header">
+        <div class="image-placeholder" aria-hidden="true">
+            <div class="placeholder-text">Příjem Image</div>
+        </div>
+    </header>
+
+    <main class="content-container">
+        <h1>PŘÍJEM</h1>
+        <div class="action-buttons">
+            <button id="pridat-produkt" class="main-button clickable-area">
+                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828925.png" alt="" class="button-icon-img" aria-hidden="true">
+                <span>Přidat položku</span>
+            </button>
+            <button id="back" class="secondary-button clickable-area" data-nav="prijem_vydej.html">
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271220.png" alt="Back" class="button-icon-img">
+                <span>Zpět</span>
+            </button>
+        </div>
+
+        <section id="prijem-polozky" class="content-area">
+            <div class="placeholder-content">
+                <p>Zde se budou zobrazovat přidané položky…</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal pro přidání položky -->
+    <div id="modal-overlay" class="modal-overlay" hidden>
+        <div class="modal-content" role="dialog" aria-labelledby="modal-title">
+            <header class="modal-header">
+                <h2 id="modal-title">Přidat novou položku</h2>
+                <button id="close-modal" class="close-button" aria-label="Zavřít">&times;</button>
+            </header>
+
+            <div class="modal-body">
+                <section class="scanner-section">
+                    <div class="scanner-placeholder">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2959/2959191.png" alt="" class="scanner-icon" aria-hidden="true">
+                        <p>Čtečka čárových kódů</p>
+                        <button id="scan-button" class="scan-button">Skenovat kód</button>
+                    </div>
+                </section>
+
+                <div class="input-section">
+                    <label for="barcode-input">Čárový kód:</label>
+                    <input type="text" id="barcode-input" placeholder="Naskenujte čárový kód…" required>
+                </div>
+
+                <div class="input-section">
+                    <label for="product-name">Název produktu:</label>
+                    <input type="text" id="product-name" placeholder="Zadejte název produktu…" required>
+                </div>
+
+                <div class="modal-buttons">
+                    <button id="add-item-btn" class="confirm-button">Přidat položku</button>
+                    <button id="cancel-btn" class="cancel-button">Zrušit</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="prijem-polozky"></div>
-    
+    <script src="../scripts/prijem.js" defer></script>
 </body>
 </html>
