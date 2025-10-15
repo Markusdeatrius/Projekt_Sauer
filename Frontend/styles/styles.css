@@ -1,8 +1,12 @@
+/* ========================================================
+                       Global Styles
+   ======================================================== */ 
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Corbel, Arial, sans-serif;
 }
 
 body {
@@ -14,7 +18,9 @@ body {
     align-items: center;
 }
 
-/* Login Page Specific */
+/* ========================================================
+                    Login form styles                      
+   ======================================================== */ 
 .login-page {
     background: #f4f4f4;
     align-items: flex-start;
@@ -55,14 +61,14 @@ body {
     align-items: center;
     gap: 40px;
     width: 100%;
-    max-width: 1000px;
+    max-width: min(1000px, 90vw); /* Responsive max-width */
     margin: 0 auto;
     padding: 0 20px;
 }
 
-/* Content Container - Unified Width */
+/* Content Container */
 .content-container {
-    max-width: 800px;
+    max-width: min(800px, 90vw); /* Responsive max-width */
     width: 100%;
     background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
@@ -90,7 +96,7 @@ body {
     gap: 12px;
     padding: 16px 24px;
     border-radius: 12px;
-    font-size: 16px;
+    font-size: px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -110,28 +116,70 @@ body {
     filter: brightness(0) invert(1);
 }
 
-/* Main Button (Přidat/Vydat) */
+/*main button - pridat/vydat + zpet*/
+.main-button, .secondary-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 18px 36px;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 220px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.main-button::before, .secondary-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.main-button:hover::before, .secondary-button:hover::before {
+    left: 100%;
+}
+
 .main-button {
-    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.secondary-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 }
 
 .main-button:hover {
-    background: linear-gradient(135deg, #229954, #27ae60);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
-}
-
-/* Secondary Button (Zpět) */
-.secondary-button {
-    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+    background: linear-gradient(135deg, #7c8ff5 0%, #8b5db8 100%);
 }
 
 .secondary-button:hover {
-    background: linear-gradient(135deg, #7f8c8d, #6c7b7d);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(127, 140, 141, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(118, 75, 162, 0.5);
+    background: linear-gradient(135deg, #7c8ff5 0%, #8b5db8 100%);
+}
+
+.button-icon-img {
+    width: 28px;
+    height: 28px;
+    filter: brightness(0) invert(1);
+}
+
+.main-button:active, .secondary-button:active {
+    transform: translateY(0);
 }
 
 /* Modal Styles */
@@ -154,7 +202,7 @@ body {
     border-radius: 20px;
     width: 90%;
     max-width: 500px;
-    max-height: 80vh;
+    max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     animation: modalSlideIn 0.3s ease-out;
@@ -176,13 +224,16 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 25px 30px;
-    border-bottom: 2px solid #ecf0f1;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px 20px 0 0;
 }
 
 .modal-header h2 {
-    color: #2c3e50;
+    color: #ffffff;
     font-size: 22px;
     margin: 0;
+    font-weight: 600;
 }
 
 .close-button {
@@ -190,18 +241,22 @@ body {
     border: none;
     font-size: 32px;
     cursor: pointer;
-    color: #7f8c8d;
-    transition: color 0.3s ease;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
     padding: 0;
     width: 40px;
     height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-bottom: 6px;
+    border-radius: 8px;
 }
 
 .close-button:hover {
-    color: #e74c3c;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
 }
 
 .modal-body {
@@ -343,7 +398,6 @@ body {
     text-align: center;
     color: #7f8c8d;
     font-style: italic;
-    padding: 40px 20px;
 }
 
 .placeholder-content p {
@@ -368,12 +422,12 @@ body {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Item Cards - Příjem (green border) */
+/* Item Cards - Příjem (zelený ohraničení) */
 #prijem-polozky .item-card {
     border-left: 4px solid #27ae60;
 }
 
-/* Item Cards - Výdej (red border) */
+/* Item Cards - Výdej (červený ohraničení) */
 #vydej-polozky .item-card {
     border-left: 4px solid #e74c3c;
 }
@@ -404,6 +458,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
+    padding-bottom: 3px;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-top: 0;
+    font-weight: normal;
 }
 
 .delete-item:hover {
@@ -436,7 +497,9 @@ body {
     transform: translateX(0);
 }
 
-/* Login Form Styles */
+/* ========================================================
+                    Login Form Styles                       
+   ========================================================  */
 form {
     background: white;
     padding: 40px 35px;
@@ -503,9 +566,12 @@ button:active {
     transform: translateY(0);
 }
 
+/*=======================================================
+                    prijem_vydej.html styles                      
+   =======================================================*/
+
 a {
     text-align: center;
-    margin-top: 20px;
     color: #3498db;
     text-decoration: none;
     font-size: 15px;
@@ -520,24 +586,30 @@ a:hover {
     transform: translateY(-1px);
 }
 
+
+
+
 /* Navigation Container */
 .nav-container {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 80px;
-    background: rgba(255, 255, 255, 0.95);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 40px 60px;
     border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: fit-content;
+    max-width: 90vw; /* Add this */
+    margin: 0 auto;
 }
-
 /* Navigation Links */
 #a-prijem, 
 #a-vydej {
     text-decoration: none;
-    color: #2c3e50;
+    color: #ffffff;
     font-size: 36px;
     font-weight: 700;
     transition: all 0.3s ease;
@@ -553,22 +625,272 @@ a:hover {
 
 #a-prijem:hover, 
 #a-vydej:hover {
-    color: #3498db;
-    background: rgba(52, 152, 219, 0.1);
+    color: #ffeaa7;
+    background: rgba(255, 255, 255, 0.2);
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.2);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
 }
 
 /* Divider Line */
 #line {
     width: 3px;
-    height: 80px;
-    background: linear-gradient(to bottom, #3498db, #2980b9);
+    height: 90px;
+    background: linear-gradient(to bottom, #ffeaa7, #fdcb6e);
     border-radius: 2px;
-    box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 0 15px rgba(255, 234, 167, 0.5);
 }
 
-/* Responsive Design */
+/* Prijem.html styles */
+.content-container h1 { 
+    font-size: 3rem;
+    margin-bottom: 0.1rem;  
+    color: transparent;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    font-weight: 700;
+    text-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    letter-spacing: 3px;
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+}
+
+.content-container h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 4px;
+    background: linear-gradient(to bottom, #ffeaa7, #fdcb6e);
+    border-radius: 2px;
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+}
+
+/* Prijem_vydej.html styles */
+.prijem-vydej-page h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: transparent;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    font-weight: 700;
+    margin-top: 20px;
+    text-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    letter-spacing: 3px;
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+}
+
+.prijem-vydej-page h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: linear-gradient(to bottom, #ffeaa7, #fdcb6e);
+    border-radius: 2px;
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+}
+
+#warehouse-items {
+    min-height: 200px;
+}
+
+#warehouse-items .placeholder-content {
+    padding: 3rem;
+    text-align: center;
+    color: #7f8c8d;
+}
+
+#warehouse-items .placeholder-content p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Vydej.html styles */
+.vydej-page h1 {
+    font-size: 3rem;
+    margin-bottom: 0.1rem;  /* Snížený margin */
+    color: transparent;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    font-weight: 700;
+    text-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    letter-spacing: 3px;
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+}
+
+.vydej-page h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: linear-gradient(to bottom, #ffeaa7, #fdcb6e);
+    border-radius: 2px;
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+}
+
+.vydej-page .image-placeholder img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+/* Prijem.html image placeholder */
+.prijem-page .image-placeholder img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+.remove-item-btn {
+    display: flex;                 /* flex pro obsah tlačítka */
+    justify-content: center;       /* horizontální střed */
+    align-items: center;           /* vertikální střed */
+    background-color: gray;
+    border: none;
+    color: red;
+    font-size: 1.5em;     
+    width: 40px;          
+    height: 40px;         
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 0;                   /* padding se dá nahradit velikostí buttonu */
+}
+
+.remove-item-btn:hover {
+    background-color: darkgray;
+    transform: scale(1.1);
+}
+
+.remove-item-btn:hover {
+    background-color: darkgray;
+    transform: scale(1.1);
+}
+
+/* =======================================================
+                    Responzivní design                      
+   =======================================================*/
+
+@media (min-width: 769px) and (max-width: 1400px) {
+    .page-header {
+        max-width: 85%;
+        gap: 50px;
+    }
+
+    .content-container {
+        max-width: 85%;
+        padding: 50px;
+    }
+
+    .prijem-page h1,
+    .vydej-page h1 {
+        font-size: 3.5rem;
+    }
+
+    .prijem-vydej-page h1 {
+        font-size: 4rem;
+    }
+
+    .image-placeholder {
+        width: 280px;
+        height: 210px;
+    }
+
+    .image-placeholder img {
+        width: 180px;
+        height: 180px;
+    }
+
+    .main-button, .secondary-button {
+        padding: 24px 48px;
+        font-size: 22px;
+        min-width: 280px;
+    }
+
+    .button-icon-img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .action-buttons {
+        gap: 30px;
+        margin: 40px 0;
+    }
+
+    .content-area {
+        padding: 40px;
+        margin-top: 40px;
+    }
+
+    .placeholder-content p {
+        font-size: 20px;
+    }
+
+    .item-card {
+        padding: 25px;
+        margin-bottom: 20px;
+    }
+
+    .item-header h3 {
+        font-size: 22px;
+    }
+
+    .item-details p {
+        font-size: 18px;
+    }
+
+    .modal-content {
+        max-width: 650px;
+    }
+
+    .modal-header h2 {
+        font-size: 26px;
+    }
+
+    .input-section input {
+        padding: 18px 20px;
+        font-size: 18px;
+    }
+
+    .confirm-button,
+    .cancel-button {
+        padding: 16px 32px;
+        font-size: 18px;
+    }
+
+    .nav-container {
+        width: 475px;
+        gap: 0px;
+    }
+
+    #a-prijem, 
+    #a-vydej {
+        font-size: 42px;
+        padding: 30px 50px;
+    }
+
+    #line {
+        height: 100px;
+    }
+}
+
 @media (max-width: 768px) {
     .login-page {
         flex-direction: column;
@@ -763,3 +1085,4 @@ a:hover {
         min-width: 130px;
     }
 }
+
