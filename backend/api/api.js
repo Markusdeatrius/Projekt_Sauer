@@ -188,4 +188,81 @@ router.get('/warehouse', (req, res) => {
 
 
 
+// ---- OUT: issue multiple items (dávkový výdej) ----
+// dávkový výdej
+// endpoint: získání produktu podle barcode
+router.get('/products/:barcode', (req, res) => {
+    const { barcode } = req.params;
+    db.query(
+        `SELECT p.uuid, p.barcode, p.productName, IFNULL(w.product_in,0) AS productIn 
+         FROM products p 
+         LEFT JOIN warehouse w ON w.product_uuid = p.uuid 
+         WHERE p.barcode = ?`, 
+        [barcode], 
+        (err, results) => {
+            if (err) return res.status(500).json({ error: err.message });
+            if (results.length === 0) return res.json({ exists: false, barcode });
+            const row = results[0];
+            res.json({
+                exists: true,
+                uuid: row.uuid,
+                barcode: row.barcode,
+                productName: row.productName,
+                productIn: row.productIn
+            });
+        }
+    );
+});
+
+// dávkový výdej (POST /out/issue)
+router.post('/out/issue', (req, res) => {
+    const { items } = req.body;
+    if (!Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({ error: 'Neplatný payload: očekáváme pole items' });
+    }
+
+    db.beginTransaction(err => {
+        if (err) return res.status(500).json({ error: err.message });
+        let idx = 0;
+
+        const rollback = (status, body) => db.rollback(() => res.status(status).json(body));
+
+        const processNext = () => {
+            if (idx >= items.length) return db.commit(err => {
+                if (err) return rollback(500, { error: err.message });
+                return res.json({ success: true, processed: items.length });
+            });
+
+            const { barcode, quantity } = items[idx];
+            const qty = parseInt(quantity, 10) || 1;
+
+            db.query('SELECT uuid FROM products WHERE barcode = ?', [barcode], (err1, prodRows) => {
+                if (err1) return rollback(500, { error: err1.message });
+                if (!prodRows || prodRows.length === 0) return rollback(404, { error: `Produkt ${barcode} nenalezen` });
+
+                const productUuid = prodRows[0].uuid;
+                db.query('SELECT product_in FROM warehouse WHERE product_uuid = ?', [productUuid], (err2, whRows) => {
+                    if (err2) return rollback(500, { error: err2.message });
+
+                    const currentIn = (whRows && whRows[0]) ? whRows[0].product_in : 0;
+                    if (currentIn < qty) return rollback(409, { error: `Nedostatek zásob ${barcode}: dostupné ${currentIn}, požadováno ${qty}` });
+
+                    db.query('UPDATE warehouse SET product_in = product_in - ? WHERE product_uuid = ?', [qty, productUuid], (err3) => {
+                        if (err3) return rollback(500, { error: err3.message });
+                        idx++;
+                        processNext();
+                    });
+                });
+            });
+        };
+
+        processNext();
+    });
+});
+
+
+
+
+
+
 module.exports = router;
