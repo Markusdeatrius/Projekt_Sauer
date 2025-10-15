@@ -14,27 +14,22 @@
         
         <div class="content-container">
             <h1>VÝDEJ</h1>
-            <!--Přidat položku button-->
+
             <div class="action-buttons">
                 <button id="vydat-produkt" class="main-button clickable-area">
                     <img src="https://cdn-icons-png.flaticon.com/512/3031/3031665.png" alt="Issue" class="button-icon-img">
                     <span>Vydat Položku</span>
                 </button>
-            <!--Zpět button-->    
-            <button id="back" class="secondary-button clickable-area" data-nav="prijem_vydej.html">
-                <img src="https://cdn-icons-png.flaticon.com/512/271/271220.png" alt="Back" class="button-icon-img">
-                <span>Zpět</span>
-            </button>
-            </div>
-            <!--vydej polozek-->
-            <div id="vydej-polozky" class="content-area">
-                <div class="placeholder-content">
-                    <p>Zde se budou zobrazovat vydané položky...</p>
-                </div>
+
+                <button id="back" class="secondary-button clickable-area" data-nav="prijem_vydej.html">
+                    <img src="https://cdn-icons-png.flaticon.com/512/271/271220.png" alt="Back" class="button-icon-img">
+                    <span>Zpět</span>
+                </button>
             </div>
         </div>
     </div>
-<!--okno ktere se ukaze po kliknuti vydat polozku-->
+
+    <!-- Modální okno pro výdej -->
     <div id="modal-overlay-vydej" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -50,14 +45,17 @@
                         <button id="scan-button-vydej" class="scan-button">Skenovat kód</button>
                     </div>
                 </div>
-                
-                <div class="input-section">
-                    <label for="product-name-vydej">Název produktu:</label>
-                    <input type="text" id="product-name-vydej" placeholder="Zadejte název produktu..." required>
+
+                <!-- Seznam vydávaných položek -->
+                <div class="issued-items-section">
+                    <h3>Položky k výdeji:</h3>
+                    <div id="issued-items-list">
+                        <p class="placeholder-content">Zde se budou zobrazovat vydané položky...</p>
+                    </div>
                 </div>
-                
+
                 <div class="modal-buttons">
-                    <button id="issue-item-btn" class="confirm-button">Vydat položku</button>
+                    <button id="issue-item-btn" class="confirm-button">Vydat položky</button>
                     <button id="cancel-btn-vydej" class="cancel-button">Zrušit</button>
                 </div>
             </div>
