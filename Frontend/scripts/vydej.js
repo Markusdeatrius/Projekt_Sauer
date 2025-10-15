@@ -1,121 +1,149 @@
-const currentUser = localStorage.getItem('currentUser');
 const modal = document.getElementById('modal-overlay-vydej');
 const addButton = document.getElementById('vydat-produkt');
 const closeButton = document.getElementById('close-modal-vydej');
 const cancelButton = document.getElementById('cancel-btn-vydej');
+const scanButton = document.getElementById('scan-button-vydej');
 const issueItemButton = document.getElementById('issue-item-btn');
-const productNameInput = document.getElementById('product-name-vydej');
-const itemsContainer = document.getElementById('vydej-polozky');
+const backButton = document.getElementById('back');
 
-// Otevřít okno
+const itemsContainer = document.getElementById('issued-items-list');
+
+let issueList = []; // [{ barcode, productName, quantity }]
+
+// ---------- Otevření a zavření modalu ----------
 addButton.addEventListener('click', () => {
     modal.style.display = 'flex';
-    productNameInput.focus();
+    renderIssueList();
 });
 
-// Zavřít okno
-[closeButton, cancelButton].forEach(btn => {
-    btn.addEventListener('click', () => {
-        modal.style.display = 'none';
-        productNameInput.value = '';
-    });
+[closeButton, cancelButton].forEach(btn => btn.addEventListener('click', () => {
+    modal.style.display = 'none';
+}));
+
+modal.addEventListener('click', e => {
+    if (e.target === modal) modal.style.display = 'none';
 });
 
-// Zavření kliknutím mimo modal
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        modal.style.display = 'none';
-        productNameInput.value = '';
-    }
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.style.display === 'flex') modal.style.display = 'none';
 });
 
-// Skenování čárového kódu a uložení do DB
-document.getElementById('scan-button-vydej').addEventListener('click', async () => {
-    const barcode = prompt("Naskenujte čárový kód:");
-
-    if (!barcode) return;
-
-    try {
-        const response = await fetch("http://localhost:3000/api/out", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ barcode })
-        });
-
-        const data = await response.json();
-
-        if (data.error) {
-            alert("❌ " + data.error);
-        } else {
-            productNameInput.value = data.name; // vyplní název produktu
-            showNotification(`✅ ${data.name} bylo vydáno`);
-        }
-    } catch (err) {
-        console.error(err);
-        alert("Chyba při ukládání do databáze");
-    }
+// ---------- tlačítko Zpět ----------
+backButton.addEventListener('click', () => {
+    const target = backButton.dataset.nav;
+    if (target) window.location.href = target;
 });
 
-// Přidání položky do seznamu (UI)
-issueItemButton.addEventListener('click', () => {
-    const productName = productNameInput.value.trim();
-
-    if (!productName) {
-        alert('Prosím naskenujte produkt');
+// ---------- funkce pro vykreslení seznamu ----------
+function renderIssueList() {
+    itemsContainer.innerHTML = '';
+    if (issueList.length === 0) {
+        itemsContainer.innerHTML = `<div class="placeholder-content"><p>Zde se budou zobrazovat vydané položky...</p></div>`;
         return;
     }
 
-    const now = new Date();
-    const dateTime = now.toLocaleString('cs-CZ');
-    const itemId = Date.now();
+    const listEl = document.createElement('div');
+    listEl.className = 'issue-list';
 
-    const placeholder = itemsContainer.querySelector('.placeholder-content');
-    if (placeholder) {
-        placeholder.remove();
-    }
+    issueList.forEach((item, index) => {
+        const el = document.createElement('div');
+        el.className = 'issue-item';
+        el.innerHTML = `
+            <span>${item.productName} (ks: ${item.quantity})</span>
+            <button class="remove-item-btn" data-index="${index}">&times;</button>
+        `;
+        listEl.appendChild(el);
+    });
 
-    const itemElement = document.createElement('div');
-    itemElement.className = 'item-card';
-    itemElement.style.borderLeft = '4px solid #e74c3c';
-    itemElement.innerHTML = `
-        <div class="item-header">
-            <h3>${productName}</h3>
-            <button class="delete-item" data-id="${itemId}">&times;</button>
-        </div>
-        <div class="item-details">
-            <p><strong>Uživatel:</strong> ${currentUser}</p>
-            <p><strong>Datum a čas výdeje:</strong> ${dateTime}</p>
-            <p><strong>Status:</strong> <span style="color: #e74c3c; font-weight: bold;">Vydáno</span></p>
-        </div>
-    `;
+    itemsContainer.appendChild(listEl);
 
-    itemsContainer.appendChild(itemElement);
+    // Přidání listeneru na odebrání jednotlivých položek
+    listEl.querySelectorAll('.remove-item-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.index, 10);
+            issueList.splice(idx, 1);
+            renderIssueList();
+        });
+    });
+}
 
-    modal.style.display = 'none';
-    productNameInput.value = '';
+// ---------- skenování a přidání do seznamu ----------
+scanButton.addEventListener('click', async () => {
+    const barcodeRaw = prompt('Naskenujte čárový kód:');
+    if (!barcodeRaw) return;
 
-    showNotification('Položka byla úspěšně vydána!');
-});
+    const barcode = barcodeRaw.trim();
 
-// Smazání položky z UI
-itemsContainer.addEventListener('click', (e) => {
-    if (e.target.classList.contains('delete-item')) {
-        const itemCard = e.target.closest('.item-card');
-        itemCard.remove();
+    try {
+        const res = await fetch(`http://localhost:3000/api/products/${encodeURIComponent(barcode)}`);
+        const data = await res.json();
 
-        if (itemsContainer.children.length === 0) {
-            itemsContainer.innerHTML = `
-                <div class="placeholder-content">
-                    <p>Zde se budou zobrazovat vydané položky...</p>
-                </div>
-            `;
+        if (!data.exists) {
+            showNotification('Produkt neexistuje!');
+            return;
         }
 
-        showNotification('Položka byla odstraněna');
+        if (data.productIn <= 0) {
+            showNotification('Produkt není skladem!');
+            return;
+        }
+
+        // Pokud je skladem, přidat do seznamu (zvýšit počet pokud už tam je)
+        const idx = issueList.findIndex(i => i.barcode === barcode);
+        if (idx !== -1) {
+            issueList[idx].quantity += 1;
+        } else {
+            issueList.push({
+                barcode,
+                productName: data.productName,
+                quantity: 1
+            });
+        }
+
+        renderIssueList();
+        showNotification(`Přidáno do seznamu: ${data.productName}`);
+
+    } catch (err) {
+        console.error(err);
+        showNotification('Chyba při komunikaci s API');
     }
 });
 
-// 📌 Funkce pro notifikace
+// ---------- potvrzení výdeje ----------
+issueItemButton.addEventListener('click', async () => {
+    if (issueList.length === 0) {
+        showNotification('Seznam je prázdný!');
+        return;
+    }
+
+    if (!confirm('Opravdu vydat všechny položky?')) return;
+
+    try {
+        const payload = { items: issueList.map(i => ({ barcode: i.barcode, quantity: i.quantity })) };
+        const res = await fetch('http://localhost:3000/api/out/issue', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await res.json();
+        if (!res.ok) {
+            showNotification('Chyba: ' + (result.error || JSON.stringify(result)));
+            return;
+        }
+
+        showNotification('Výdej dokončen!');
+        issueList = [];
+        renderIssueList();
+        modal.style.display = 'none';
+
+    } catch (err) {
+        console.error(err);
+        showNotification('Chyba při komunikaci s API');
+    }
+});
+
+// ---------- Notifikace ----------
 function showNotification(message) {
     const notification = document.createElement('div');
     notification.className = 'notification';
@@ -125,28 +153,6 @@ function showNotification(message) {
     setTimeout(() => notification.classList.add('show'), 100);
     setTimeout(() => {
         notification.classList.remove('show');
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 300);
+        setTimeout(() => document.body.removeChild(notification), 300);
     }, 3000);
 }
-
-// Zavření ESC
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.style.display === 'flex') {
-        modal.style.display = 'none';
-        productNameInput.value = '';
-    }
-});
-
-// Zpět button
-document.querySelectorAll("[data-nav]").forEach(button => {
-    button.addEventListener("click", () => {
-        const target = button.dataset.nav;
-        if (target) {
-            window.location.href = target;
-        }
-    });
-});
-
-
