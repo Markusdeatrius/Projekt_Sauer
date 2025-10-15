@@ -1,5 +1,4 @@
-DROP TABLE IF EXISTS warehouse;
-DROP TABLE IF EXISTS products;
+
 
 -- Vytvoř tabulku s UUID
 CREATE TABLE IF NOT EXISTS users (
