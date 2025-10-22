@@ -109,7 +109,6 @@ scanButton.addEventListener('click', async () => {
     }
 });
 
-// ---------- potvrzení výdeje ----------
 issueItemButton.addEventListener('click', async () => {
     if (issueList.length === 0) {
         showNotification('Seznam je prázdný!');
@@ -118,11 +117,20 @@ issueItemButton.addEventListener('click', async () => {
 
     if (!confirm('Opravdu vydat všechny položky?')) return;
 
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Nejste přihlášen');
+        return;
+    }
+
     try {
         const payload = { items: issueList.map(i => ({ barcode: i.barcode, quantity: i.quantity })) };
         const res = await fetch('http://localhost:3000/api/out/issue', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(payload)
         });
 
@@ -142,6 +150,7 @@ issueItemButton.addEventListener('click', async () => {
         showNotification('Chyba při komunikaci s API');
     }
 });
+
 
 // ---------- Notifikace ----------
 function showNotification(message) {

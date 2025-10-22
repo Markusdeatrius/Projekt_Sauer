@@ -1,4 +1,5 @@
 const itemsContainer = document.getElementById('warehouse-items');
+const searchInput = document.getElementById('search-input');
 
 async function loadWarehouse() {
     try {
@@ -15,15 +16,13 @@ async function loadWarehouse() {
             itemElement.className = 'item-card';
             itemElement.dataset.barcode = p.barcode;
             itemElement.innerHTML = `
-                <div class="item-header">
-                    <h3>${p.productName}</h3>
-                </div>
-                <div class="item-details">
-                    <p><strong>Barcode:</strong> ${p.barcode}</p>
-                    <p><strong>Na skladě:</strong> ${p.product_in} kusů</p>
-                    <p><strong>Datum a čas:</strong> ${dateTime}</p>
-                </div>
+                <div class="item-name">${p.productName}</div>
+                <div class="item-barcode">Barcode: ${p.barcode}</div>
+                <div class="item-stock">Na skladě: ${p.product_in} kusů</div>
+                <div class="item-date">${dateTime}</div>
             `;
+            itemsContainer.appendChild(itemElement);
+
             itemsContainer.appendChild(itemElement);
         });
 
@@ -39,5 +38,22 @@ async function loadWarehouse() {
         console.error('Chyba při načítání skladu:', err);
     }
 }
+
+// ---------- filtr ----------
+searchInput.addEventListener('input', () => {
+    const filter = searchInput.value.toLowerCase();
+    const items = itemsContainer.querySelectorAll('.item-card');
+
+    items.forEach(item => {
+        const name = item.querySelector('.item-name').textContent.toLowerCase();
+        const barcode = item.querySelector('.item-barcode').textContent.toLowerCase();
+
+        if (name.includes(filter) || barcode.includes(filter)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+});
 
 document.addEventListener('DOMContentLoaded', loadWarehouse);

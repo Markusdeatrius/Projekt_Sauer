@@ -94,52 +94,38 @@ async function loadWarehouse() {
 }
 document.addEventListener('DOMContentLoaded', loadWarehouse);
 
-// ----- Přidání položky -----
 addItemButton.addEventListener('click', async () => {
     const productName = productNameInput.value.trim();
     const barcode = currentBarcode || barcodeInput.value.trim();
+    const token = localStorage.getItem('token');
 
     if (!barcode || !productName) {
         alert('Prosím vyplňte čárový kód i název produktu');
         return;
     }
 
+    if (!token) {
+        alert('Nejste přihlášen');
+        return;
+    }
+
     try {
         const res = await fetch('http://localhost:3000/api/products', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ barcode, productName })
         });
 
         const data = await res.json();
-        const warehouseCount = data.warehouse_count || 0;
-        const now = new Date();
-        const dateTime = now.toLocaleString('cs-CZ');
-
-        // Najdeme existující položku, nebo přidáme novou
-        let existingItem = Array.from(itemsContainer.querySelectorAll('.item-card'))
-            .find(el => el.dataset.barcode === barcode);
-
-        if (existingItem) {
-            const stockP = existingItem.querySelector('p:nth-child(2)');
-            stockP.innerHTML = `<strong>Na skladě:</strong> ${warehouseCount} kusů`;
-        } else {
-            const itemElement = document.createElement('div');
-            itemElement.className = 'item-card';
-            itemElement.dataset.barcode = barcode;
-            itemElement.innerHTML = `
-                <div class="item-header">
-                    <h3>${productName}</h3>
-                </div>
-                <div class="item-details">
-                    <p><strong>Barcode:</strong> ${barcode}</p>
-                    <p><strong>Na skladě:</strong> ${warehouseCount} kusů</p>
-                    <p><strong>Datum a čas:</strong> ${dateTime}</p>
-                </div>
-            `;
-            itemsContainer.appendChild(itemElement);
+        if (!res.ok) {
+            alert(data.error || 'Chyba při ukládání produktu');
+            return;
         }
 
+        loadWarehouse(); // znovu načteme sklad
         closeModal();
         showNotification('Položka byla úspěšně přidána!');
 
@@ -148,6 +134,7 @@ addItemButton.addEventListener('click', async () => {
         alert('Chyba při ukládání produktu');
     }
 });
+
 
 // ----- Notifikace -----
 function showNotification(message) {
