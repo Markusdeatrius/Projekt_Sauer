@@ -54,21 +54,20 @@ body {
     text-align: center;
 }
 
-/* Page Header - Consistent Centering */
 .page-header {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 40px;
     width: 100%;
-    max-width: min(1000px, 90vw); /* Responsive max-width */
+    max-width: min(1800px, 98vw); /* Responsive max-width */
     margin: 0 auto;
     padding: 0 20px;
 }
 
 /* Content Container */
 .content-container {
-    max-width: min(800px, 90vw); /* Responsive max-width */
+    max-width: min(1600px, 98vw); /* Responsive max-width */
     width: 100%;
     background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
@@ -390,7 +389,7 @@ body {
     background: rgba(248, 249, 250, 0.8);
     border-radius: 12px;
     border: 1px solid rgba(0, 0, 0, 0.05);
-    min-height: 200px;
+    min-height: 400px;
     width: 100%;
 }
 
@@ -702,7 +701,7 @@ a:hover {
 }
 
 #warehouse-items {
-    min-height: 200px;
+    min-height: 300px;
 }
 
 #warehouse-items .placeholder-content {
@@ -783,6 +782,35 @@ a:hover {
     background-color: darkgray;
     transform: scale(1.1);
 }
+
+.item-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    margin-bottom: 0.5em;
+    border-radius: 5px;
+    background-color: #fafafa;
+    gap: 1em; /* mezery mezi sloupci */
+    font-size: 0.9rem;
+}
+
+.item-card > div {
+    flex: 1; /* všechny sloupce stejné šířky */
+}
+
+.item-card .item-name {
+    font-weight: bold;
+}
+
+.item-card .item-barcode,
+.item-card .item-stock,
+.item-card .item-date {
+    text-align: center; /* střed pro barcode, sklad, datum */
+}
+
+
 
 /* =======================================================
                     Responzivní design                      
