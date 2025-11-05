@@ -15,9 +15,9 @@ app.get('/', (req, res) => {
 });
 
 // 404 – pokud žádná jiná cesta nevyhovuje
-//app.use((req, res) => {
-//  res.status(404).sendFile(path.join(__dirname, 'public/404error.html'));
-//});
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, 'public/404error.html'));
+});
 
 app.listen(port, () => {
   console.log(`Frontend server běží na http://localhost:${port}`);
