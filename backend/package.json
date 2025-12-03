@@ -1,14 +1,14 @@
 {
-  "name": "mygames",
+  "name": "sauer",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://github.com/Markusdeatrius/MyGames#readme",
+  "homepage": "https://github.com/Markusdeatrius",
   "bugs": {
-    "url": "https://github.com/Markusdeatrius/MyGames/issues"
+    "url": "https://github.com/Markusdeatrius/MyGames"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Markusdeatrius/MyGames.git"
+    "url": "git+https://github.com/Markusdeatrius/"
   },
   "license": "MIT",
   "author": "Marek Vyletal",
@@ -26,7 +26,9 @@
     "express": "^5.1.0",
     "express-session": "^1.18.1",
     "jsonwebtoken": "^9.0.2",
+    "mailersend": "^2.6.0",
     "mysql2": "^3.15.0",
+    "nodemailer": "^7.0.10",
     "package.json": "^2.0.1",
     "sql": "^0.78.0",
     "uuid": "^13.0.0"
