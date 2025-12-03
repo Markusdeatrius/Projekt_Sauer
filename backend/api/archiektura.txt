@@ -1,9 +1,2 @@
-api
-    db
-    frontend
-    api fx
-        login
 
-
-tablet
-    frontend
+j.barvinsky@gmail.cz, 
