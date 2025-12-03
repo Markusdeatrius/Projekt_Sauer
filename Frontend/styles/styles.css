@@ -810,6 +810,15 @@ a:hover {
     text-align: center; /* střed pro barcode, sklad, datum */
 }
 
+.obr{
+    display: flex;
+    justify-content: center;
+}
+.obr img{
+    max-width:30%;
+    height: auto;
+}
+
 
 
 /* =======================================================
@@ -1112,5 +1121,15 @@ a:hover {
         padding: 18px 30px;
         min-width: 130px;
     }
+
+    .obr{
+    display: flex;
+    justify-content: center;
+    }
+    .obr img{
+        max-width:40%;
+        height: auto;
+    }
 }
+
 
