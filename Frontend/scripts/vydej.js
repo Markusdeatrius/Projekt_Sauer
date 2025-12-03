@@ -75,7 +75,7 @@ scanButton.addEventListener('click', async () => {
     const barcode = barcodeRaw.trim();
 
     try {
-        const res = await fetch(`http://localhost:3000/api/products/${encodeURIComponent(barcode)}`);
+        const res = await fetch(`http://localhost:5050/api/products/${encodeURIComponent(barcode)}`);
         const data = await res.json();
 
         if (!data.exists) {
@@ -125,7 +125,7 @@ issueItemButton.addEventListener('click', async () => {
 
     try {
         const payload = { items: issueList.map(i => ({ barcode: i.barcode, quantity: i.quantity })) };
-        const res = await fetch('http://localhost:3000/api/out/issue', {
+        const res = await fetch('http://localhost:5050/api/out/issue', {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',

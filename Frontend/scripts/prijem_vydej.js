@@ -3,7 +3,7 @@ const searchInput = document.getElementById('search-input');
 
 async function loadWarehouse() {
     try {
-        const res = await fetch('http://localhost:3000/api/warehouse');
+        const res = await fetch('http://localhost:5050/api/warehouse');
         const products = await res.json();
 
         itemsContainer.innerHTML = ''; // smažeme placeholder

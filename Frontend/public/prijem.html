@@ -13,18 +13,20 @@
     <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
-    <header class="page-header">
-        <div class="image-placeholder" aria-hidden="true">
-            <div class="placeholder-text">Příjem Image</div>
-        </div>
+    <header class="obr">
+        <img src="assets/logo.png">
     </header>
 
     <main class="content-container">
         <h1>PŘÍJEM</h1>
         <div class="action-buttons">
-            <button id="pridat-produkt" class="main-button clickable-area">
+            <button id="single-receive-btn" class="main-button clickable-area">
                 <img src="https://cdn-icons-png.flaticon.com/512/1828/1828925.png" alt="" class="button-icon-img" aria-hidden="true">
-                <span>Přidat položku</span>
+                <span>Příjem</span>
+            </button>
+            <button id="bulk-receive-btn" class="main-button clickable-area">
+                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828925.png" alt="" class="button-icon-img" aria-hidden="true">
+                <span>Hromadný příjem</span>
             </button>
             <button id="back" class="secondary-button clickable-area" data-nav="prijem_vydej.html">
                 <img src="https://cdn-icons-png.flaticon.com/512/271/271220.png" alt="Back" class="button-icon-img">
@@ -32,40 +34,30 @@
             </button>
         </div>
 
-        <section id="prijem-polozky" class="content-area">
-            <div class="placeholder-content">
-                <p>Zde se budou zobrazovat přidané položky…</p>
-            </div>
-        </section>
+        <div id="receive-container"></div>
     </main>
 
-    <!-- Modal pro přidání položky -->
+    <!-- Modal pro jednotlivý příjem -->
     <div id="modal-overlay" class="modal-overlay" hidden>
         <div class="modal-content" role="dialog" aria-labelledby="modal-title">
             <header class="modal-header">
-                <h2 id="modal-title">Přidat novou položku</h2>
+                <h2 id="modal-title">Přidat položku</h2>
                 <button id="close-modal" class="close-button" aria-label="Zavřít">&times;</button>
             </header>
-
             <div class="modal-body">
-                <section class="scanner-section">
-                    <div class="scanner-placeholder">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2959/2959191.png" alt="" class="scanner-icon" aria-hidden="true">
-                        <p>Čtečka čárových kódů</p>
-                        <button id="scan-button" class="scan-button">Skenovat kód</button>
-                    </div>
-                </section>
-
-                <div class="input-section">
-                    <label for="barcode-input">Čárový kód:</label>
-                    <input type="text" id="barcode-input" placeholder="Naskenujte čárový kód…" required>
+                <div class="scanner-section">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2959/2959191.png" class="scanner-icon" aria-hidden="true">
+                    <p>Čtečka čárových kódů</p>
+                    <button id="scan-button" class="scan-button">Skenovat kód</button>
                 </div>
-
-                <div class="input-section">
+                <div class="input-section" id="product-name-section">
                     <label for="product-name">Název produktu:</label>
-                    <input type="text" id="product-name" placeholder="Zadejte název produktu…" required>
+                    <input type="text" id="product-name" placeholder="Zadejte název produktu…">
                 </div>
-
+                <div class="input-section" id="safety-stock-section">
+                    <label for="safety-stock">Safety stock:</label>
+                    <input type="number" id="safety-stock" placeholder="Zadejte safety stock">
+                </div>
                 <div class="modal-buttons">
                     <button id="add-item-btn" class="confirm-button">Přidat položku</button>
                     <button id="cancel-btn" class="cancel-button">Zrušit</button>
@@ -74,6 +66,29 @@
         </div>
     </div>
 
+    <!-- Modal pro hromadný příjem -->
+    <div id="modal-overlay-bulk" class="modal-overlay" hidden>
+        <div class="modal-content" role="dialog" aria-labelledby="modal-title-bulk">
+            <header class="modal-header">
+                <h2 id="modal-title-bulk">Hromadný příjem</h2>
+                <button id="close-modal-bulk" class="close-button">&times;</button>
+            </header>
+            <div class="modal-body">
+                <div class="scanner-section">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2959/2959191.png" class="scanner-icon" aria-hidden="true">
+                    <p>Čtečka čárových kódů</p>
+                    <button id="scan-button-bulk" class="scan-button">Skenovat kód</button>
+                </div>
+                <div id="cart-items-bulk" class="cart-items"></div>
+                <div class="modal-buttons">
+                    <button id="add-items-btn-bulk" class="confirm-button">Přidat položky</button>
+                    <button id="cancel-btn-bulk" class="cancel-button">Zrušit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="../scripts/prijem.js" defer></script>
+    <script src="../scripts/bulk.js" defer></script>
 </body>
 </html>

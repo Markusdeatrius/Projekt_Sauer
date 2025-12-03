@@ -1,159 +1,113 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('modal-overlay');
+    const singleButton = document.getElementById('single-receive-btn');
+    const closeButton = document.getElementById('close-modal');
+    const cancelButton = document.getElementById('cancel-btn');
+    const addItemButton = document.getElementById('add-item-btn');
+    const productNameInput = document.getElementById('product-name');
+    const safetyStockInput = document.getElementById('safety-stock');
+    const scanButton = document.getElementById('scan-button');
 
-const modal = document.getElementById('modal-overlay');
-const addButton = document.getElementById('pridat-produkt');
-const closeButton = document.getElementById('close-modal');
-const cancelButton = document.getElementById('cancel-btn');
-const addItemButton = document.getElementById('add-item-btn');
-const productNameInput = document.getElementById('product-name');
-const barcodeInput = document.getElementById('barcode-input');
-const itemsContainer = document.getElementById('prijem-polozky');
+    let currentBarcode = null;
 
-let currentBarcode = null;
-
-// ----- Otevření modalu -----
-addButton.addEventListener('click', () => {
-    modal.style.display = 'flex';
-    barcodeInput.value = '';
-    productNameInput.value = '';
-    currentBarcode = null;
-    barcodeInput.focus();
-});
-
-// ----- Zavření modalu -----
-function closeModal() {
-    modal.style.display = 'none';
-    barcodeInput.value = '';
-    productNameInput.value = '';
-    currentBarcode = null;
-}
-closeButton.addEventListener('click', closeModal);
-cancelButton.addEventListener('click', closeModal);
-modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.style.display === 'flex') closeModal(); });
-
-// ----- Skenování barcode -----
-document.getElementById('scan-button').addEventListener('click', async () => {
-    const barcodeRaw = prompt("Naskenujte čárový kód:");
-    if (!barcodeRaw) return;
-
-    currentBarcode = barcodeRaw.trim();
-    barcodeInput.value = currentBarcode;
-
-    try {
-        const res = await fetch(`http://localhost:3000/api/products/${encodeURIComponent(currentBarcode)}`);
-        const data = await res.json();
-
-        productNameInput.value = data.exists ? data.productName || '' : '';
-        showNotification(data.exists ? `Produkt nalezen: ${data.productName}` : 'Nový produkt — zadejte název a potvrďte');
-
-    } catch (err) {
-        console.error(err);
-        alert('Chyba při komunikaci s databází');
+    function showNotification(msg) {
+        const n = document.createElement('div');
+        n.className = 'notification';
+        n.textContent = msg;
+        document.body.appendChild(n);
+        setTimeout(() => n.classList.add('show'), 100);
+        setTimeout(() => { 
+            n.classList.remove('show'); 
+            setTimeout(() => document.body.removeChild(n), 300); 
+        }, 3000);
     }
-});
 
-// ----- Načtení produktů ze skladu -----
-async function loadWarehouse() {
-    try {
-        const res = await fetch('http://localhost:3000/api/warehouse');
-        const products = await res.json();
+    function openModal() {
+        modal.style.display = 'flex';
+        currentBarcode = null;
+        productNameInput.value = '';
+        safetyStockInput.value = '';
+    }
 
-        itemsContainer.innerHTML = ''; // smažeme placeholder, ale nic víc nesmažeme
+    function closeModal() {
+        modal.style.display = 'none';
+        currentBarcode = null;
+    }
 
-        products.forEach(p => {
-            const now = new Date();
-            const dateTime = now.toLocaleString('cs-CZ');
+    [closeButton, cancelButton].forEach(btn => btn.addEventListener('click', closeModal));
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.style.display === 'flex') closeModal(); });
 
-            const itemElement = document.createElement('div');
-            itemElement.className = 'item-card';
-            itemElement.dataset.barcode = p.barcode;
-            itemElement.innerHTML = `
-                <div class="item-header">
-                    <h3>${p.productName}</h3>
-                </div>
-                <div class="item-details">
-                    <p><strong>Barcode:</strong> ${p.barcode}</p>
-                    <p><strong>Na skladě:</strong> ${p.product_in} kusů</p>
-                    <p><strong>Datum a čas:</strong> ${dateTime}</p>
-                </div>
-            `;
-            itemsContainer.appendChild(itemElement);
-        });
+    singleButton.addEventListener('click', openModal);
 
-        if (products.length === 0) {
-            itemsContainer.innerHTML = `
-                <div class="placeholder-content">
-                    <p>Zde se budou zobrazovat přidané položky...</p>
-                </div>
-            `;
+    scanButton.addEventListener('click', async () => {
+        if (modal.style.display !== 'flex') return;
+        const barcodeRaw = prompt("Naskenujte čárový kód:");
+        if (!barcodeRaw) return;
+
+        currentBarcode = barcodeRaw.trim();
+
+        try {
+            const res = await fetch(`http://localhost:5050/api/products/${encodeURIComponent(currentBarcode)}`);
+            const data = await res.json();
+
+            if (!data.exists) {
+                showNotification("Produkt neexistuje, přidejte ho ručně");
+                return;
+            }
+
+            productNameInput.value = data.productName || '';
+            safetyStockInput.value = (data.safetyStock != null) ? data.safetyStock : '';
+            showNotification(`Produkt nalezen: ${data.productName}`);
+        } catch(err) {
+            alert('Chyba při komunikaci s DB: ' + err.message);
         }
-
-    } catch (err) {
-        console.error('Chyba při načítání skladu:', err);
-    }
-}
-document.addEventListener('DOMContentLoaded', loadWarehouse);
-
-addItemButton.addEventListener('click', async () => {
-    const productName = productNameInput.value.trim();
-    const barcode = currentBarcode || barcodeInput.value.trim();
-    const token = localStorage.getItem('token');
-
-    if (!barcode || !productName) {
-        alert('Prosím vyplňte čárový kód i název produktu');
-        return;
-    }
-
-    if (!token) {
-        alert('Nejste přihlášen');
-        return;
-    }
-
-    try {
-        const res = await fetch('http://localhost:3000/api/products', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ barcode, productName })
-        });
-
-        const data = await res.json();
-        if (!res.ok) {
-            alert(data.error || 'Chyba při ukládání produktu');
-            return;
-        }
-
-        loadWarehouse(); // znovu načteme sklad
-        closeModal();
-        showNotification('Položka byla úspěšně přidána!');
-
-    } catch (err) {
-        console.error(err);
-        alert('Chyba při ukládání produktu');
-    }
-});
-
-
-// ----- Notifikace -----
-function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.textContent = message;
-    document.body.appendChild(notification);
-
-    setTimeout(() => notification.classList.add('show'), 100);
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => document.body.removeChild(notification), 300);
-    }, 3000);
-}
-
-// ----- Navigace přes data-nav -----
-document.querySelectorAll('[data-nav]').forEach(button => {
-    button.addEventListener('click', () => {
-        const target = button.dataset.nav;
-        if (target) window.location.href = target;
     });
+
+    addItemButton.addEventListener('click', async () => {
+        if (!currentBarcode) {
+            const manualBarcode = prompt("Zadejte čárový kód:");
+            if (!manualBarcode) return;
+            currentBarcode = manualBarcode.trim();
+        }
+
+        const barcode = currentBarcode;
+        const productName = productNameInput.value.trim();
+        const safetyStockRaw = safetyStockInput.value.trim();
+        const safetyStock = safetyStockRaw === '' ? undefined : Number(safetyStockRaw);
+
+        if (!barcode || !productName) return alert("Vyplňte čárový kód a název produktu");
+
+        try {
+            const res = await fetch('http://localhost:5050/api/products', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ 
+                    barcode, 
+                    productName, 
+                    safety_stock: safetyStock 
+                })
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Chyba serveru');
+            }
+
+            showNotification('Položka přidána!');
+            productNameInput.value = '';
+            safetyStockInput.value = '';
+            currentBarcode = null;
+        } catch(err) {
+            alert('Chyba při ukládání do DB: ' + err.message);
+        }
+    });
+
+    document.querySelectorAll('[data-nav]').forEach(btn => btn.addEventListener('click', () => {
+        const target = btn.dataset.nav;
+        if (target) window.location.href = target;
+    }));
 });

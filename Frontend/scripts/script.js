@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const password = document.getElementById('register-password').value;
 
         try {
-            const res = await fetch('http://localhost:3000/api/register', {
+            const res = await fetch('http://localhost:5050/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ firstname, surname, username, password }),
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const password = document.getElementById('login-password').value;
 
         try {
-            const res = await fetch('http://localhost:3000/api/login', {
+            const res = await fetch('http://localhost:5050/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
@@ -78,4 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Chyba:', err);
         }
     });
+
+
 });
