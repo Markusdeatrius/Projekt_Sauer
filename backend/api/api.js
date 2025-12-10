@@ -26,6 +26,7 @@ async function checkLowStock(productUuid, currentCount, safetyStock, productName
 
 
 async function sendLowStockEmail(productName, count) {
+    
     const mailerSend = new MailerSend({
         apiKey: process.env.MAILERSEND_API_KEY
     });
@@ -288,7 +289,9 @@ router.post('/out/issue', authenticateToken, async (req, res) => {
             await conn.query('UPDATE warehouse SET product_in = ? WHERE product_uuid = ?', [updatedCount, productUuid]);
             await conn.query('INSERT INTO picking (user_uuid, product_uuid, quantity) VALUES (?, ?, ?)', [user.userId, productUuid, qty]);
 
-            checkLowStock(productUuid, updatedCount, safetyStock, barcode);
+        const [prodNameRows] = await conn.query('SELECT productName FROM products WHERE uuid = ?', [productUuid]);
+        const productName = prodNameRows[0]?.productName || barcode;
+        checkLowStock(productUuid, updatedCount, safetyStock, productName);
         }
 
         await conn.commit();
