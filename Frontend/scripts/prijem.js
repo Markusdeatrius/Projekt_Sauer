@@ -1,4 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Logout tlačítko ---
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) {
+        if (localStorage.getItem("token")) logoutBtn.style.display = "inline-block";
+        logoutBtn.addEventListener("click", async () => {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+            try {
+                const res = await fetch("http://localhost:5050/api/logout", {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${token}` },
+                });
+                const data = await res.json();
+                if (data.success) {
+                    localStorage.removeItem("token");
+                    window.location.href = "/logIn.html";
+                }
+            } catch (err) { console.error("Chyba při odhlášení:", err); }
+        });
+    }
+
     const modal = document.getElementById('modal-overlay');
     const singleButton = document.getElementById('single-receive-btn');
     const closeButton = document.getElementById('close-modal');
@@ -110,4 +132,5 @@ document.addEventListener('DOMContentLoaded', () => {
         const target = btn.dataset.nav;
         if (target) window.location.href = target;
     }));
+
 });

@@ -819,6 +819,33 @@ a:hover {
     height: auto;
 }
 
+#logout-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    max-width: fit-content;
+}
+
+#logout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.5);
+    background: linear-gradient(135deg, #7c8ff5 0%, #8b5db8 100%);
+}
+
+#logout-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
 
 
 /* =======================================================
@@ -1131,5 +1158,6 @@ a:hover {
         height: auto;
     }
 }
+
 
 
