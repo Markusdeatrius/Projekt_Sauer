@@ -1,0 +1,52 @@
+version: '3.9'
+services:
+  db:
+    image: mysql:8
+    container_name: sauer_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+
+  backend:
+    build:
+      context: ./backend
+    container_name: sauer_backend
+    ports:
+      - "5050:5050"
+    environment:
+      DB_HOST: db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      PORT: ${PORT}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      TOKEN_HEADER_KEY: ${TOKEN_HEADER_KEY}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE}
+      MAILERSEND_FROM: ${MAILERSEND_FROM}
+      MAILERSEND_API_KEY: ${MAILERSEND_API_KEY}
+      NOTIFY_EMAIL: ${NOTIFY_EMAIL}
+    restart: always
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./Frontend
+    container_name: sauer_frontend
+    ports:
+      - "8081:8081"
+    restart: always
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

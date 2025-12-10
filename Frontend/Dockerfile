@@ -7,6 +7,6 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 5050
+EXPOSE 8081
 
-CMD ["node", "server.js"]
+CMD ["node", "frontend-server.js"]
