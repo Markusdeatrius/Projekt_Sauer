@@ -1,7 +1,6 @@
-version: '3.9'
 services:
   db:
-    image: mysql:8
+    image: mysql:8.0
     container_name: sauer_db
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -13,6 +12,10 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      timeout: 20s
+      retries: 10
 
   backend:
     build:
@@ -27,16 +30,27 @@ services:
       DB_NAME: ${DB_NAME}
       PORT: ${PORT}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      TOKEN_HEADER_KEY: ${TOKEN_HEADER_KEY}
-      SMTP_HOST: ${SMTP_HOST}
-      SMTP_PORT: ${SMTP_PORT}
-      SMTP_SECURE: ${SMTP_SECURE}
-      MAILERSEND_FROM: ${MAILERSEND_FROM}
-      MAILERSEND_API_KEY: ${MAILERSEND_API_KEY}
-      NOTIFY_EMAIL: ${NOTIFY_EMAIL}
-    restart: always
+      SESSION_SECRET: ${SESSION_SECRET:-Heslo}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    restart: always
+
+  db_backup:
+    image: mysql:8.0
+    container_name: sauer_db_backup
+    volumes:
+      - db_backups:/backups
+      # Mapujeme náš nový skript do kontejneru
+      - ./backend/database/script/backup.sh:/usr/local/bin/backup.sh
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    entrypoint: ["/bin/bash", "/usr/local/bin/backup.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
 
   frontend:
     build:
@@ -44,9 +58,10 @@ services:
     container_name: sauer_frontend
     ports:
       - "8081:8081"
-    restart: always
     depends_on:
       - backend
+    restart: always
 
 volumes:
   db_data:
+  db_backups:
