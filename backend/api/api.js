@@ -104,7 +104,8 @@ router.post('/login', async (req, res) => {
             process.env.JWT_SECRET_KEY,
             { expiresIn: '1d' }
         );
-
+        
+        req.session.user = { uuid: user.uuid, username: user.username };
         return res.json({
             success: true,
             token,

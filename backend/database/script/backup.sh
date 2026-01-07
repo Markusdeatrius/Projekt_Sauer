@@ -1,5 +1,5 @@
 #!/bin/sh
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
-docker exec sauer_db \
-  mysqldump -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" \
-  > /backups/db_$TIMESTAMP.sql
+mysqldump -h db -u root -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" > /backups/db_$TIMESTAMP.sql
+
+echo "Záloha hotova: db_$TIMESTAMP.sql"
