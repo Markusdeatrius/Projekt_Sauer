@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('../database/db');
+const db = require('../database/seeds/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
