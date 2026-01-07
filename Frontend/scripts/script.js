@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const password = document.getElementById('register-password').value;
 
         try {
-            const res = await fetch('http://localhost:5050/api/register', {
+            const res = await fetch('/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ firstname, surname, username, password }),
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const password = document.getElementById('login-password').value;
 
         try {
-            const res = await fetch('http://localhost:5050/api/login', {
+            const res = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const token = localStorage.getItem("token");
                 if (!token) return;
 
-                const res = await fetch("http://localhost:5050/api/logout", {
+                const res = await fetch("/api/logout", {
                     method: "POST",
                     headers: { "Authorization": `Bearer ${token}` },
                 });

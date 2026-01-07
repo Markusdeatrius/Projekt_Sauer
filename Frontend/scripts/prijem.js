@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem("token");
             if (!token) return;
             try {
-                const res = await fetch("http://localhost:5050/api/logout", {
+                const res = await fetch("/api/logout", {
                     method: "POST",
                     headers: { "Authorization": `Bearer ${token}` },
                 });
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentBarcode = barcodeRaw.trim();
 
         try {
-            const res = await fetch(`http://localhost:5050/api/products/${encodeURIComponent(currentBarcode)}`);
+            const res = await fetch(`/api/products/${encodeURIComponent(currentBarcode)}`);
             const data = await res.json();
 
             if (!data.exists) {
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!barcode || !productName) return alert("Vyplňte čárový kód a název produktu");
 
         try {
-            const res = await fetch('http://localhost:5050/api/products', {
+            const res = await fetch('/api/products', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',

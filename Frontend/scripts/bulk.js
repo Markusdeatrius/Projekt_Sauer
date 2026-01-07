@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const barcode = barcodeRaw.trim();
 
         try {
-            const res = await fetch(`http://localhost:5050/api/products/${encodeURIComponent(barcode)}`);
+            const res = await fetch(`/api/products/${encodeURIComponent(barcode)}`);
             const data = await res.json();
             if (!data.exists) {
                 showNotification("Produkt neexistuje, přidejte ho přes klasický příjem");
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch('http://localhost:5050/api/products/bulk', {
+            const res = await fetch('/api/products/bulk', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

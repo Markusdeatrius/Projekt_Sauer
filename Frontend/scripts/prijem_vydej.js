@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
         authBtn.style.display = 'block';
         authBtn.addEventListener('click', async () => {
             try {
-                const res = await fetch('http://localhost:5050/api/logout', {
+                const res = await fetch('/api/logout', {
                     method: 'POST',
                     credentials: 'include'
                 });
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function loadWarehouse() {
         try {
-            const res = await fetch('http://localhost:5050/api/warehouse');
+            const res = await fetch('/api/warehouse');
             const products = await res.json();
 
             itemsContainer.innerHTML = '';
