@@ -1,0 +1,10 @@
+:80 {
+    # 1. API požadavky směřujeme na backend kontejner
+    reverse_proxy /api/* sauer_backend:5050
+
+    # 2. Všechno ostatní (HTML, JS, obrázky) směřujeme na frontend kontejner
+    reverse_proxy * sauer_frontend:8081
+
+    # 3. Volitelné: Komprese (zrychlí načítání v síti)
+    encode zstd gzip
+}

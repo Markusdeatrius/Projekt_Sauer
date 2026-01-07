@@ -21,32 +21,15 @@ services:
     build:
       context: ./backend
     container_name: sauer_backend
-    ports:
-      - "5050:5050"
+    # PORTS JSOU PRYČ - Caddy k němu přistupuje interně přes port 5050
     environment:
       DB_HOST: db
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-      PORT: ${PORT}
+      PORT: 5050
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       SESSION_SECRET: ${SESSION_SECRET:-Heslo}
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: always
-
-  db_backup:
-    image: mysql:8.0
-    container_name: sauer_db_backup
-    volumes:
-      - db_backups:/backups
-      # Mapujeme náš nový skript do kontejneru
-      - ./backend/database/script/backup.sh:/usr/local/bin/backup.sh
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
-    entrypoint: ["/bin/bash", "/usr/local/bin/backup.sh"]
     depends_on:
       db:
         condition: service_healthy
@@ -56,12 +39,47 @@ services:
     build:
       context: ./Frontend
     container_name: sauer_frontend
-    ports:
-      - "8081:8081"
+    # PORTS JSOU PRYČ - Caddy k němu přistupuje interně přes port 8081
     depends_on:
       - backend
     restart: always
 
+  db_backup:
+    image: mysql:8.0
+    container_name: sauer_db_backup
+    profiles: ["tools"]  # Zabrání automatickému spouštění a restartům
+    volumes:
+      # POUŽÍVÁME BIND MOUNT (./backups), abychom soubory viděli v PC
+      - ./backend/database/backups:/backups 
+      # CESTA K SCRIPTU: odpovídá tvému tree
+      - ./backend/database/script/backup.sh:/usr/local/bin/backup.sh
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}       # Přidáno pro jistotu
+      MYSQL_PASSWORD: ${DB_PASSWORD} # Přidáno pro jistotu
+    entrypoint: ["/bin/bash", "/usr/local/bin/backup.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  caddy:
+      build:
+        context: ./Caddy  # Cesta ke složce, kde je Dockerfile a Caddyfile
+      container_name: sauer_gateway
+      restart: always
+      ports:
+        - "80:80"
+        - "443:443"
+      volumes:
+        - caddy_data:/data
+        - caddy_config:/config
+      depends_on:
+        - frontend
+        - backend
+
 volumes:
   db_data:
   db_backups:
+  caddy_data:
+  caddy_config:
