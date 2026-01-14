@@ -4,7 +4,7 @@ Dokumentace pro vývoj, nasazení a konfiguraci projektu **Sauer**. Aplikace se 
 
 ---
 
-## 📋 Požadavky
+## Požadavky
 
 Před spuštěním se ujistěte, že máte nainstalované následující nástroje:
 
@@ -18,7 +18,7 @@ Před spuštěním se ujistěte, že máte nainstalované následující nástro
 
 ---
 
-## ⚙️ Konfigurace (.env)
+## Konfigurace (.env)
 
 Projekt vyžaduje soubor `.env` v kořenovém adresáři (nebo nastavení proměnných v Portaineru).
 
@@ -64,7 +64,7 @@ Pokud není vyplněno, odesílání e-mailů nebude fungovat.
 
 ---
 
-## 🐳 Nasazení přes Docker (Produkce)
+## Nasazení přes Docker (Produkce)
 
 Docker Compose automaticky zajistí síťování, volumes a závislosti.
 
@@ -132,7 +132,7 @@ npm run dev
 
 ---
 
-## ℹ️ Technické poznámky a architektura
+## Technické poznámky a architektura
 
 * **Databáze:** Port `3306` (MySQL) **není** vystaven do internetu. Je přístupný pouze uvnitř Docker sítě pro backend.
 * **Routing (Caddy):**
