@@ -4,11 +4,11 @@
   "description": "",
   "homepage": "https://github.com/Markusdeatrius",
   "bugs": {
-    "url": "https://github.com/Markusdeatrius/MyGames"
+    "url": "https://github.com/Markusdeatrius/projekt_sauer"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Markusdeatrius/"
+    "url": "git+https://github.com/Markusdeatrius/projekt_sauer"
   },
   "license": "MIT",
   "author": "Marek Vyletal",

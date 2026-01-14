@@ -1,29 +1,24 @@
 services:
-  db:
+  sauer_db:
     image: mysql:8.0
-    container_name: sauer_db
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
     restart: always
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
       timeout: 20s
       retries: 10
 
-  backend:
+  sauer_backend:
     build:
       context: ./backend
-    container_name: sauer_backend
-    # PORTS JSOU PRYČ - Caddy k němu přistupuje interně přes port 5050
     environment:
-      DB_HOST: db
+      DB_HOST: sauer_db
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
@@ -31,55 +26,63 @@ services:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       SESSION_SECRET: ${SESSION_SECRET:-Heslo}
     depends_on:
-      db:
+      sauer_db:
         condition: service_healthy
     restart: always
 
-  frontend:
+  sauer_frontend:
     build:
       context: ./Frontend
-    container_name: sauer_frontend
-    # PORTS JSOU PRYČ - Caddy k němu přistupuje interně přes port 8081
     depends_on:
-      - backend
+      - sauer_backend
     restart: always
 
-  db_backup:
+  sauer_db_backup:
     image: mysql:8.0
-    container_name: sauer_db_backup
-    profiles: ["tools"]  # Zabrání automatickému spouštění a restartům
+    profiles: ["tools"]
     volumes:
-      # POUŽÍVÁME BIND MOUNT (./backups), abychom soubory viděli v PC
-      - ./backend/database/backups:/backups 
-      # CESTA K SCRIPTU: odpovídá tvému tree
+      - ./backend/database/backups:/backups
       - ./backend/database/script/backup.sh:/usr/local/bin/backup.sh
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}       # Přidáno pro jistotu
-      MYSQL_PASSWORD: ${DB_PASSWORD} # Přidáno pro jistotu
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     entrypoint: ["/bin/bash", "/usr/local/bin/backup.sh"]
     depends_on:
-      db:
+      sauer_db:
         condition: service_healthy
 
-  caddy:
-      build:
-        context: ./Caddy  # Cesta ke složce, kde je Dockerfile a Caddyfile
-      container_name: sauer_gateway
-      restart: always
-      ports:
-        - "80:80"
-        - "443:443"
-      volumes:
-        - caddy_data:/data
-        - caddy_config:/config
-      depends_on:
-        - frontend
-        - backend
+  sauer_gateway:
+    build:
+      context: ./Caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - sauer_frontend
+      - sauer_backend
+
+  portainer:
+    image: portainer/portainer-ce:lts
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    ports:
+      - "9443:9443"
+      - "8000:8000"
+
+networks:
+  default:
+    name: portainer_network
 
 volumes:
   db_data:
-  db_backups:
   caddy_data:
   caddy_config:
+  portainer_data:

@@ -98,7 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const safetyStockRaw = safetyStockInput.value.trim();
         const safetyStock = safetyStockRaw === '' ? undefined : Number(safetyStockRaw);
 
-        if (!barcode || !productName) return alert("Vyplňte čárový kód a název produktu");
+        if (!barcode || !productName || !safetyStock) return alert("Vyplňte vsechna policka");
+        if (!safetyStock < 0) return alert("Safety Stock nemuze byt mensi nule");
 
         try {
             const res = await fetch('/api/products', {
