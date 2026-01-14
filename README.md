@@ -1,88 +1,145 @@
-===== Projekt Sauer =====
+# Projekt Sauer
 
-Požadavky:
-- Node.js (nutné pro backend a frontend)
-- Docker a Docker Compose
-- Interní porty: 3000, 5050, 8081
-- Externí porty: 80/443 (Caddy), 9443 (Portainer)
+Dokumentace pro vývoj, nasazení a konfiguraci projektu **Sauer**. Aplikace se skládá z Node.js backendu, frontendové části a využívá Docker pro kontejnerizaci.
 
-Lokální vývoj (bez Dockeru):
+---
 
-  Backend:
-    cd backend/
-    npm install
-    npm run start
-    (Backend naslouchá na portu 5050)
+## 📋 Požadavky
 
-  Frontend:
-    cd Frontend/
-    npm install
-    npm run dev
-    (Frontend naslouchá na portu 8081)
+Před spuštěním se ujistěte, že máte nainstalované následující nástroje:
 
-Deploy přes Docker Compose:
-
-1. Zajistit, aby .env soubor byl dostupný (lokálně nebo přes Portainer environment variables)
-2. V kořenovém adresáři projektu spustit:
-    docker-compose up --build -d
-   - Stack poběží na pozadí
-   - Backend a frontend jsou směrovány přes Caddy:
-       /api/* → sauer_backend:5050
-              → sauer_frontend:8081
-
-3. Portainer UI (volitelné):
-    https://<IP_serveru>:9443
-
-Update aplikace:
-
-    git pull
-    docker-compose up -d --build
-    (Kontejnery se překompilují a restartují, data z volumes zůstávají)
-
-Lokální vývoj na vlastním PC (bez serveru):
-- Přístup k aplikaci:
-    http://localhost/
-- Portainer (pokud běží) přes:
-    https://localhost:9443
-- Caddy směruje frontend a backend interně, TLS není potřeba
-- Vše běží lokálně, nezávisle na internetu
-
-Poznámky:
-- DB port 3306 není vystaven ven; přístup pouze přes backend
-- Docker Compose zajistí vše: síť, volumes, závislosti mezi kontejnery
-- docker-compose up -d = spuštění na pozadí; bez -d běží logy v terminálu
-
-Server a aplikace používají tyto environment proměnné pro konfiguraci:
-
-Aplikační port a zabezpečení
-  - PORT=                        Port, na kterém běží backend (obvykle 5050)
-  - JWT_SECRET_KEY=              Tajný klíč pro JWT tokeny
-  - TOKEN_HEADER_KEY=            Název HTTP headeru pro tokeny
-
-SMTP pro odesílání e-mailů
-  - SMTP_HOST                    Host SMTP serveru
-  - SMTP_PORT                    Port SMTP serveru (např. 587)
-  - SMTP_SECURE                  true/false, zda použít TLS
-  - MAILERSEND_FROM              Odesílatelská adresa
-  - MAILERSEND_API_KEY           API klíč pro MailerSend
-  - NOTIFY_EMAIL                 E-mail, kam se posílají notifikace
-
-Připojení k databázi (aplikace)
-  - DB_HOST=                     Host databáze (např. sauer_db pro Docker)
-  - DB_USER=                     Uživatelské jméno pro DB
-  - DB_PASSWORD=                 Heslo uživatele pro DB
-  - DB_NAME=                     Název databáze
-
-MySQL (pro Docker kontejner)
-  - MYSQL_ROOT_PASSWORD=         Root heslo MySQL
-  - MYSQL_DATABASE=              Název DB, kterou MySQL vytvoří
-  - MYSQL_USER=                  Uživatelské jméno pro MySQL
-  - MYSQL_PASSWORD=              Heslo pro uživatele MySQL
-
-Poznámky:
-- Hodnoty s "=" musí být vyplněny, jinak kontejner nebo aplikace spadne
-- Proměnné DB_* se používají v backendu
-- Proměnné MYSQL_* se používají při inicializaci MySQL kontejneru
-- Proměnné SMTP_* a MAILERSEND_* jsou volitelné, pokud není potřeba odesílání e-mailů
+* **Node.js** (pro lokální vývoj backendu i frontendu)
+* **Docker** a **Docker Compose**
+* **Porty:**
+* *Interní:* 3000, 5050, 8081
+* *Externí:* 80/443 (Caddy Proxy), 9443 (Portainer)
 
 
+
+---
+
+## ⚙️ Konfigurace (.env)
+
+Projekt vyžaduje soubor `.env` v kořenovém adresáři (nebo nastavení proměnných v Portaineru).
+
+### Aplikační nastavení
+
+| Proměnná | Popis | Příklad |
+| --- | --- | --- |
+| `PORT` | Port backendu | `5050` |
+| `JWT_SECRET_KEY` | **(Povinné)** Tajný klíč pro JWT tokeny | `super_tajny_klic` |
+| `TOKEN_HEADER_KEY` | Název HTTP hlavičky pro token | `x-access-token` |
+
+### Databáze (Připojení aplikace)
+
+Tyto proměnné využívá backend pro připojení k DB.
+| Proměnná | Popis | Příklad |
+| :--- | :--- | :--- |
+| `DB_HOST` | Host databáze | `sauer_db` (v Dockeru) |
+| `DB_USER` | Uživatelské jméno pro DB | `app_user` |
+| `DB_PASSWORD` | **(Povinné)** Heslo uživatele | `tajne_heslo` |
+| `DB_NAME` | Název databáze | `sauer_db` |
+
+### MySQL Kontejner (Inicializace)
+
+Tyto proměnné slouží pouze pro prvotní vytvoření MySQL kontejneru.
+| Proměnná | Popis |
+| :--- | :--- |
+| `MYSQL_ROOT_PASSWORD` | **(Povinné)** Root heslo pro MySQL |
+| `MYSQL_DATABASE` | Název DB, kterou MySQL vytvoří |
+| `MYSQL_USER` | Uživatelské jméno pro MySQL |
+| `MYSQL_PASSWORD` | Heslo pro uživatele MySQL |
+
+### SMTP a E-maily (Volitelné)
+
+Pokud není vyplněno, odesílání e-mailů nebude fungovat.
+| Proměnná | Popis |
+| :--- | :--- |
+| `SMTP_HOST` | Adresa SMTP serveru |
+| `SMTP_PORT` | Port SMTP serveru (např. 587) |
+| `SMTP_SECURE` | Použít TLS (`true`/`false`) |
+| `MAILERSEND_FROM` | Odesílatelská adresa |
+| `MAILERSEND_API_KEY` | API klíč pro MailerSend |
+| `NOTIFY_EMAIL` | E-mail pro zasílání notifikací |
+
+---
+
+## 🐳 Nasazení přes Docker (Produkce)
+
+Docker Compose automaticky zajistí síťování, volumes a závislosti.
+
+1. **Příprava:** Ujistěte se, že existuje soubor `.env`.
+2. **Spuštění:**
+```bash
+docker-compose up --build -d
+
+```
+
+
+* Stack běží na pozadí (`-d`).
+* Reverzní proxy **Caddy** automaticky směruje provoz:
+* `/api/*` ➝ `sauer_backend:5050`
+* `/*` ➝ `sauer_frontend:8081`
+
+
+
+
+3. **Přístup k aplikaci:**
+* Web: `http://localhost/` (nebo IP serveru)
+* Portainer (pokud je zapnut): `https://<IP_serveru>:9443`
+
+
+
+### Aktualizace aplikace
+
+Pro stažení změn z Gitu a přebudování kontejnerů (data ve volumes zůstanou zachována):
+
+```bash
+git pull
+docker-compose up -d --build
+
+```
+
+---
+
+## 🛠 Lokální vývoj (Bez Dockeru)
+
+Pokud chcete vyvíjet bez kontejnerů přímo na hostitelském stroji.
+
+### 1. Backend
+
+Backend bude naslouchat na portu **5050**.
+
+```bash
+cd backend/
+npm install
+npm run start
+
+```
+
+### 2. Frontend
+
+Frontend bude naslouchat na portu **8081**.
+
+```bash
+cd Frontend/
+npm install
+npm run dev
+
+```
+
+> **Poznámka:** Při lokálním vývoji bez Caddy musíte přistupovat k frontendu na portu 8081 a backendu na 5050 napřímo.
+
+---
+
+## ℹ️ Technické poznámky a architektura
+
+* **Databáze:** Port `3306` (MySQL) **není** vystaven do internetu. Je přístupný pouze uvnitř Docker sítě pro backend.
+* **Routing (Caddy):**
+* Caddy slouží jako vstupní bod (Gateway).
+* Směruje frontend a backend interně.
+* TLS není pro interní komunikaci vyžadováno.
+
+
+* **Zálohy a Data:** Docker volumes zajišťují, že data databáze přežijí restart nebo smazání kontejneru.
+* **Logs:** Pokud spustíte `docker-compose up` bez přepínače `-d`, uvidíte logy v terminálu v reálném čase.
