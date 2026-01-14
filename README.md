@@ -51,3 +51,38 @@ Poznámky:
 - DB port 3306 není vystaven ven; přístup pouze přes backend
 - Docker Compose zajistí vše: síť, volumes, závislosti mezi kontejnery
 - docker-compose up -d = spuštění na pozadí; bez -d běží logy v terminálu
+
+Server a aplikace používají tyto environment proměnné pro konfiguraci:
+
+Aplikační port a zabezpečení
+  PORT=                        // Port, na kterém běží backend (obvykle 5050)
+  JWT_SECRET_KEY=              // Tajný klíč pro JWT tokeny
+  TOKEN_HEADER_KEY=            // Název HTTP headeru pro tokeny
+
+SMTP pro odesílání e-mailů
+  SMTP_HOST                    // Host SMTP serveru
+  SMTP_PORT                    // Port SMTP serveru (např. 587)
+  SMTP_SECURE                  // true/false, zda použít TLS
+  MAILERSEND_FROM              // Odesílatelská adresa
+  MAILERSEND_API_KEY           // API klíč pro MailerSend
+  NOTIFY_EMAIL                 // E-mail, kam se posílají notifikace
+
+Připojení k databázi (aplikace)
+  DB_HOST=                     // Host databáze (např. sauer_db pro Docker)
+  DB_USER=                     // Uživatelské jméno pro DB
+  DB_PASSWORD=                 // Heslo uživatele pro DB
+  DB_NAME=                     // Název databáze
+
+MySQL (pro Docker kontejner)
+  MYSQL_ROOT_PASSWORD=         // Root heslo MySQL
+  MYSQL_DATABASE=              // Název DB, kterou MySQL vytvoří
+  MYSQL_USER=                  // Uživatelské jméno pro MySQL
+  MYSQL_PASSWORD=              // Heslo pro uživatele MySQL
+
+Poznámky:
+- Hodnoty s "=" musí být vyplněny, jinak kontejner nebo aplikace spadne
+- Proměnné DB_* se používají v backendu
+- Proměnné MYSQL_* se používají při inicializaci MySQL kontejneru
+- Proměnné SMTP_* a MAILERSEND_* jsou volitelné, pokud není potřeba odesílání e-mailů
+
+
