@@ -102,7 +102,7 @@ docker-compose up -d --build
 
 ---
 
-## 🛠 Lokální vývoj (Bez Dockeru)
+## Lokální vývoj (Bez Dockeru)
 
 Pokud chcete vyvíjet bez kontejnerů přímo na hostitelském stroji.
 
